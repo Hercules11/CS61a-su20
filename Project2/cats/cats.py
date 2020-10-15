@@ -132,7 +132,7 @@ def shifty_shifts(start, goal, limit):
     if start == goal:
         return 0
     if limit == 0:
-        return 1 # 神来之笔，if start!=goal, then the num must more than 1, so return 1
+        return 1
     len_start = len(start)
     len_goal = len(goal)
     boundary = min(len_start, len_goal)
@@ -322,7 +322,6 @@ def key_distance_diff(start, goal, limit):
 
     start = start.lower() #converts the string to lowercase
     goal = goal.lower() #converts the string to lowercase
-    # 单打独斗，极容易失败多次后give up
     # fighting fighting fighting for future
     # BEGIN PROBLEM EC1
     "*** YOUR CODE HERE ***"
@@ -338,10 +337,9 @@ def key_distance_diff(start, goal, limit):
             distance = 2
         add_diff = 1 + key_distance_diff(start, goal[1:], limit -1)
         remove_diff = 1 + key_distance_diff(start[1:], goal, limit -1)
-        substitute_diff = distance + key_distance_diff(start[1:], goal[1:], limit -1)
+        substitute_diff = distance + key_distance_diff(start[1:], goal[1:], limit -distance)
         return min(add_diff, remove_diff, substitute_diff)
     # END PROBLEM EC1
-    # 水平有限，目前还处理不了几十万条的数据，先放一放202010082119
 
 def memo(f):
     """A memoization function as seen in John Denero's lecture on Growth"""

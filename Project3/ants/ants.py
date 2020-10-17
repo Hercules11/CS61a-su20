@@ -503,7 +503,7 @@ class QueenAnt(ScubaThrower):  # You should change this line
         #  In addition to the standard ScubaThrower  throw action
         if self.first_queen:
             super(ScubaThrower, self).action(gamestate)
-        # super().action(gamesate)
+        #   super().action(gamesate)
         if self.first_queen:
             cur_place = self.place.exit
             while cur_place:
@@ -551,6 +551,7 @@ class Bee(Insect):
     damage = 1
     is_watersafe = True
     has_scared = False
+    nomore_scared = False
     # OVERRIDE CLASS ATTRIBUTES HERE
 
 
@@ -604,6 +605,7 @@ class Bee(Insect):
 ############
 # Statuses #
 ############
+# refer to https://github.com/czahie/CS61A/blob/master/Projects/ants/ants.py
 
 def make_slow(action, bee):
     """Return a new action method that calls ACTION every other turn.
@@ -613,12 +615,11 @@ def make_slow(action, bee):
     # BEGIN Problem EC
     "*** YOUR CODE HERE ***"
     # firstly accept function, then accept parameters
-    def bee_action(gamestate):
+    def new_action(gamestate):
+        # print(2) use it to test where the ptoblem is
         if not gamestate.time % 2:
             action(gamestate)
-        else :
-            pass
-    return bee_action
+    return new_action
     # END Problem EC
 
 def make_scare(action, bee):
@@ -628,25 +629,35 @@ def make_scare(action, bee):
     """
     # BEGIN Problem EC
     "*** YOUR CODE HERE ***"
-    if bee.has_scared:
-        pass
-    else :
-        bee.has_scared = True
-        def bee_action(gamestate):
+    def new_action(gamestate):
+        if bee.nomore_scared :
             action(gamestate)
-        return bee_action
+        else :
+            bee.has_scared = True
+            action(gamestate)
+    return new_action
     # END Problem EC
 
 def apply_status(status, bee, length):
     """Apply a status to a BEE that lasts for LENGTH turns."""
     # BEGIN Problem EC
     "*** YOUR CODE HERE ***"
-    while length:
-        status(bee.action, bee)
-        length -= 1
-    if bee.has_scared :
-        bee.destination = bee.place.exit
+    origin_action = bee.action
+    new_action = status(bee.action, bee)
+
+    def action(gamestate):
+        nonlocal length
+        if length == 0:
+            bee.nomore_scared = True
+            bee.has_scared = False
+            return origin_action(gamestate)
+        else:
+            length -= 1
+            return new_action(gamestate)
+
+    bee.action = action
     # END Problem EC
+
 
 
 class SlowThrower(ThrowerAnt):
@@ -654,6 +665,7 @@ class SlowThrower(ThrowerAnt):
 
     name = 'Slow'
     food_cost = 4
+    damage = 0
     # BEGIN Problem EC
     implemented = True   # Change to True to view in the GUI
     # END Problem EC
@@ -669,6 +681,7 @@ class ScaryThrower(ThrowerAnt):
     name = 'Scary'
     food_cost = 6
     scared_bees = []
+    damage = 0
     # BEGIN Problem EC
     implemented = True   # Change to True to view in the GUI
     # END Problem EC
@@ -686,6 +699,7 @@ class LaserAnt(ThrowerAnt):
 
     name = 'Laser'
     food_cost = 10
+    damage = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem OPTIONAL
     implemented = True   # Change to True to view in the GUI
@@ -697,12 +711,30 @@ class LaserAnt(ThrowerAnt):
 
     def insects_in_front(self, beehive):
         # BEGIN Problem OPTIONAL
-        return {}
+        enemy_dict = {}
+        location = self.place
+        distance = 0
+        if self.place.ant is not self :
+            enemy_dict[self.place.ant] = distance
+        while location != beehive :
+            if location.bees :
+                for el in location.bees :
+                    enemy_dict[el] = distance
+            location = location.entrance
+            distance += 1
+            if location.ant :
+                enemy_dict[location.ant] = distance
+                if isinstance(location.ant, ContainerAnt) :
+                    enemy_dict[location.ant.contained_ant] = distance
+
+        return enemy_dict
         # END Problem OPTIONAL
 
     def calculate_damage(self, distance):
         # BEGIN Problem OPTIONAL
-        return 0
+        lose_damage = distance*0.2 + self.insects_shot*0.05
+        damage_value = self.damage - lose_damage
+        return damage_value
         # END Problem OPTIONAL
 
     def action(self, gamestate):

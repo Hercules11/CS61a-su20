@@ -1,4 +1,5 @@
 """A Scheme interpreter and its read-eval-print loop."""
+# refer to https://github.com/zhou0220/cs61a-su20/blob/master/project/scheme/scheme.py
 from __future__ import print_function  # Python 2 compatibility
 
 import sys
@@ -36,6 +37,11 @@ def scheme_eval(expr, env, _=None): # Optional third argument is ignored
     else:
         # BEGIN PROBLEM 4
         "*** YOUR CODE HERE ***"
+        # deeply understand question description
+        operator = scheme_eval(first, env)
+        validate_procedure(operator)
+        operands = rest.map(lambda val: scheme_eval(val, env))
+        return scheme_apply(operator, operands, env)
         # END PROBLEM 4
 
 def self_evaluating(expr):
@@ -93,12 +99,17 @@ class Frame(object):
         """Define Scheme SYMBOL to have VALUE."""
         # BEGIN PROBLEM 2
         "*** YOUR CODE HERE ***"
+        self.bindings[symbol] = value
         # END PROBLEM 2
 
     def lookup(self, symbol):
         """Return the value bound to SYMBOL. Errors if SYMBOL is not found."""
         # BEGIN PROBLEM 2
         "*** YOUR CODE HERE ***"
+        if symbol in self.bindings :
+            return self.bindings[symbol]
+        if self.parent :
+            return self.parent.lookup(symbol)
         # END PROBLEM 2
         raise SchemeError('unknown identifier: {0}'.format(symbol))
 
@@ -154,6 +165,15 @@ class BuiltinProcedure(Procedure):
         python_args = []
         # BEGIN PROBLEM 3
         "*** YOUR CODE HERE ***"
+        while args:
+            python_args.append(args.first)
+            args = args.rest
+        if self.use_env:
+            python_args.append(env)
+        try:
+            return self.fn(*python_args)
+        except TypeError as err:
+            raise SchemeError('incorrect number of arguments: {0}'.format(self))
         # END PROBLEM 3
 
 class LambdaProcedure(Procedure):
@@ -234,6 +254,9 @@ def do_define_form(expressions, env):
         validate_form(expressions, 2, 2) # Checks that expressions is a list of length exactly 2
         # BEGIN PROBLEM 5
         "*** YOUR CODE HERE ***"
+        env.define(target, scheme_eval(expressions.rest.first, env))
+        return target
+	# 水平不够，就此打住，202010221630
         # END PROBLEM 5
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
         # BEGIN PROBLEM 9

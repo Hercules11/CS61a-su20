@@ -13,6 +13,7 @@ if sys.version_info[0] < 3:  # Python 2 compatibility
         if not line: raise EOFError()
         return line.rstrip('\r\n')
 
+
 class Buffer(object):
     """A Buffer provides a way of accessing a sequence of tokens across lines.
 
@@ -58,6 +59,7 @@ class Buffer(object):
     3: 12 ) >>
     >>> buf.pop_first()  # returns None
     """
+
     def __init__(self, source):
         self.index = 0
         self.lines = []
@@ -92,17 +94,18 @@ class Buffer(object):
         """Return recently read contents; current element marked with >>."""
         # Format string for right-justified line numbers
         n = len(self.lines)
-        msg = '{0:>' + str(math.floor(math.log10(n))+1) + "}: "
+        msg = '{0:>' + str(math.floor(math.log10(n)) + 1) + "}: "
 
         # Up to three previous lines and current line are included in output
         s = ''
-        for i in range(max(0, n-4), n-1):
-            s += msg.format(i+1) + ' '.join(map(str, self.lines[i])) + '\n'
+        for i in range(max(0, n - 4), n - 1):
+            s += msg.format(i + 1) + ' '.join(map(str, self.lines[i])) + '\n'
         s += msg.format(n)
         s += ' '.join(map(str, self.current_line[:self.index]))
         s += ' >> '
         s += ' '.join(map(str, self.current_line[self.index:]))
         return s.strip()
+
 
 # Try to import readline for interactive history
 try:
@@ -110,8 +113,10 @@ try:
 except:
     pass
 
+
 class InputReader(object):
     """An InputReader is an iterable that prompts the user for input."""
+
     def __init__(self, prompt):
         self.prompt = prompt
 
@@ -120,8 +125,10 @@ class InputReader(object):
             yield input(self.prompt)
             self.prompt = ' ' * len(self.prompt)
 
+
 class LineReader(object):
     """A LineReader is an iterable that prints lines after a prompt."""
+
     def __init__(self, lines, prompt, comment=";"):
         self.lines = lines
         self.prompt = prompt
@@ -131,7 +138,7 @@ class LineReader(object):
         while self.lines:
             line = self.lines.pop(0).strip('\n')
             if (self.prompt is not None and line != "" and
-                not line.lstrip().startswith(self.comment)):
+                    not line.lstrip().startswith(self.comment)):
                 print(self.prompt + line)
                 self.prompt = ' ' * len(self.prompt)
             yield line

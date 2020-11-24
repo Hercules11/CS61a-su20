@@ -24,6 +24,7 @@ from ucb import main, trace, interact
 from scheme_tokens import tokenize_lines, DELIMITERS
 from buffer import Buffer, InputReader, LineReader
 
+
 # Pairs and Scheme lists
 
 class Pair(object):
@@ -37,6 +38,7 @@ class Pair(object):
     >>> print(s.map(lambda x: x+4))
     (5 6)
     """
+
     def __init__(self, first, rest):
         from scheme_builtins import scheme_valid_cdrp, SchemeError
         if not (rest is nil or isinstance(rest, Pair) or type(rest).__name__ == 'Promise'):
@@ -108,14 +110,16 @@ class nil(object):
     def flatmap(self, fn):
         return self
 
-nil = nil() # Assignment hides the nil class; there is only one instance
+
+nil = nil()  # Assignment hides the nil class; there is only one instance
 
 # Scheme list parser
 
 # Quotation markers
-quotes = {"'":  'quote',
-          '`':  'quasiquote',
-          ',':  'unquote'}
+quotes = {"'": 'quote',
+          '`': 'quasiquote',
+          ',': 'unquote'}
+
 
 def scheme_read(src):
     """Read the next expression from SRC, a Buffer of tokens.
@@ -131,7 +135,7 @@ def scheme_read(src):
     """
     if src.current() is None:
         raise EOFError
-    val = src.pop_first() # Get the first token
+    val = src.pop_first()  # Get the first token
     if val == 'nil':
         # BEGIN PROBLEM 1
         "*** YOUR CODE HERE ***"
@@ -151,6 +155,8 @@ def scheme_read(src):
         return val
     else:
         raise SyntaxError('unexpected token: {0}'.format(val))
+
+
 def read_tail(src):
     """Return the remainder of a list in SRC, starting before an element or ).
 
@@ -176,11 +182,13 @@ def read_tail(src):
     except EOFError:
         raise SyntaxError('unexpected end of file')
 
+
 # Convenience methods
 
 def buffer_input(prompt='scm> '):
     """Return a Buffer instance containing interactive input."""
     return Buffer(tokenize_lines(InputReader(prompt)))
+
 
 def buffer_lines(lines, prompt='scm> ', show_prompt=False):
     """Return a Buffer instance iterating through LINES."""
@@ -190,6 +198,7 @@ def buffer_lines(lines, prompt='scm> ', show_prompt=False):
         input_lines = LineReader(lines, prompt)
     return Buffer(tokenize_lines(input_lines))
 
+
 def read_line(line):
     """Read a single string LINE as a Scheme expression."""
     buf = Buffer(tokenize_lines([line]))
@@ -197,6 +206,7 @@ def read_line(line):
     if buf.more_on_line:
         raise SyntaxError("read_line's argument can only be a single element, but received multiple")
     return result
+
 
 def repl_str(val):
     """Should largely match str(val), except for booleans and undefined."""
@@ -209,6 +219,7 @@ def repl_str(val):
     if isinstance(val, numbers.Number) and not isinstance(val, numbers.Integral):
         return repr(val)  # Python 2 compatibility
     return str(val)
+
 
 # Interactive loop
 def read_print_loop():
@@ -228,6 +239,7 @@ def read_print_loop():
         except (KeyboardInterrupt, EOFError):  # <Control>-D, etc.
             print()
             return
+
 
 @main
 def main(*args):

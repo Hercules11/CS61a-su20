@@ -1,4 +1,3 @@
-# cs61a_su20
-including all projects
-### aim to accomplishing the four projects in cs61a
+# cs61a su20
+including four projects
 #### 目前已完成4个项目

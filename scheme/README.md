@@ -2,7 +2,7 @@ Congratulations! Your Scheme interpreter implementation is now complete!
 
 ## Part V: Write Some Scheme
 
-————后面要写一些scheme语句，溜了溜了
+————后面要写一些 Scheme 语句，溜了溜了
 
 
 

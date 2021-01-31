@@ -1,4 +1,4 @@
-python ok --local
+\hog> python ok --local
 
 Assignment: Project 1: Hog
 
@@ -11,3 +11,4 @@ Running tests
 Test summary
     569 test cases passed! No cases failed.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+

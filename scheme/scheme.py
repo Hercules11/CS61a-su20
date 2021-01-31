@@ -1,5 +1,4 @@
 """A Scheme interpreter and its read-eval-print loop."""
-# refer to https://github.com/zhou0220/cs61a-su20/blob/master/project/scheme/scheme.py
 from __future__ import print_function  # Python 2 compatibility
 
 import sys
@@ -38,10 +37,10 @@ def scheme_eval(expr, env, _=None):  # Optional third argument is ignored
     else:
         # BEGIN PROBLEM 4
         "*** YOUR CODE HERE ***"
-        operator = scheme_eval(first, env)
-        validate_procedure(operator)
+        operate = scheme_eval(first, env)
+        validate_procedure(operate)
         operands = rest.map(lambda val: scheme_eval(val, env))
-        return scheme_apply(operator, operands, env)
+        return scheme_apply(operate, operands, env)
         # END PROBLEM 4
 
 
@@ -290,6 +289,7 @@ def do_define_form(expressions, env):
     elif isinstance(target, Pair) and scheme_symbolp(target.first):
         # BEGIN PROBLEM 9
         "*** YOUR CODE HERE ***"
+        validate_formals(expressions.first)
         env.define(target.first, LambdaProcedure(target.rest, expressions.rest, env))
         return target.first
         # END PROBLEM 9

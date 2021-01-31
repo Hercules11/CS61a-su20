@@ -3,7 +3,6 @@
 from utils import *
 from ucb import main, interact, trace
 from datetime import datetime
-# refer to https://github.com/zhou0220/cs61a-su20/blob/master/project/cats/cats.py
 
 
 ###########
@@ -27,6 +26,7 @@ def choose(paragraphs, select, k):
     return ''
     # END PROBLEM 1
 
+
 # import re
 def about(topic):
     """Return a select function that returns whether a paragraph contains one
@@ -41,6 +41,7 @@ def about(topic):
     assert all([lower(x) == x for x in topic]), 'topics should be lowercase.'
     # BEGIN PROBLEM 2
     "*** YOUR CODE HERE ***"
+
     def select(element):
         list_el = remove_punctuation(element).lower().split()
         # wuwuwu, not notice the note
@@ -50,6 +51,7 @@ def about(topic):
                 if e == x:
                     return True
         return False
+
     return select
     # END PROBLEM 2
 
@@ -84,8 +86,8 @@ def accuracy(typed, reference):
             correct_num += 1
     if len_typed == 0:
         return 0.0
-    else :
-        result = correct_num*100.0 / len_typed
+    else:
+        result = correct_num * 100.0 / len_typed
         return result
     # END PROBLEM 3
 
@@ -96,7 +98,7 @@ def wpm(typed, elapsed):
     # BEGIN PROBLEM 4
     "*** YOUR CODE HERE ***"
     len_typed = len(typed)
-    wpm = (len_typed/5.0) / (elapsed/60)
+    wpm = (len_typed / 5.0) / (elapsed / 60)
     return wpm
     # END PROBLEM 4
 
@@ -113,10 +115,10 @@ def autocorrect(user_word, valid_words, diff_function, limit):
         return user_word
     for e in valid_words:
         diff_value = diff_function(user_word, e, limit)
-        if  diff_value <= limit:
+        if diff_value <= limit:
             diff_dict[e] = diff_value
     if diff_dict:
-        return min(diff_dict, key=diff_dict.get) # 神来之笔，抄别人的
+        return min(diff_dict, key=diff_dict.get)  # 神来之笔，抄别人的
     return user_word
     # END PROBLEM 5
 
@@ -139,7 +141,7 @@ def shifty_shifts(start, goal, limit):
     if boundary == 0:
         return len_start + len_goal
     if start[0] != goal[0]:
-        return 1 + shifty_shifts(start[1:], goal[1:], limit-1)
+        return 1 + shifty_shifts(start[1:], goal[1:], limit - 1)
     return shifty_shifts(start[1:], goal[1:], limit)
     # END PROBLEM 6
 
@@ -148,26 +150,27 @@ def meowstake_matches(start, goal, limit):
     """A diff function that computes the edit distance from START to GOAL."""
     # assert False, 'Remove this line'
 
-    if limit < 0 or len(start)==0 or len(goal)==0 : # Fill in the condition
+    if limit < 0 or len(start) == 0 or len(goal) == 0:  # Fill in the condition
         # 分情况讨论，确定边界条件
         # BEGIN
         "*** YOUR CODE HERE ***"
         return len(start) + len(goal)
         # END
 
-    elif start[0] == goal[0]: # Feel free to remove or add additional cases
+    elif start[0] == goal[0]:  # Feel free to remove or add additional cases
         # BEGIN
         "*** YOUR CODE HERE ***"
         return meowstake_matches(start[1:], goal[1:], limit)
         # END
-    else :
-        add_diff = 1 + meowstake_matches(start, goal[1:], limit-1)  # Fill in these lines
-        remove_diff = 1 + meowstake_matches(start[1:], goal, limit-1)
-        substitute_diff = 1 + meowstake_matches(start[1:], goal[1:], limit-1)
+    else:
+        add_diff = 1 + meowstake_matches(start, goal[1:], limit - 1)  # Fill in these lines
+        remove_diff = 1 + meowstake_matches(start[1:], goal, limit - 1)
+        substitute_diff = 1 + meowstake_matches(start[1:], goal[1:], limit - 1)
         # BEGIN
         return min(add_diff, remove_diff, substitute_diff)
         "*** YOUR CODE HERE ***"
         # END
+
 
 # def ways(num):
 #     left_step = num
@@ -193,16 +196,16 @@ def report_progress(typed, prompt, id, send):
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
     if len(typed) == 0:
-        send({ 'id':id,'progress': 0.0})
+        send({'id': id, 'progress': 0.0})
         return 0.0
-    else :
+    else:
         i = 0
         value = 0
         for e in range(0, len(typed)):
             if typed[i] == prompt[i]:
                 value += 1
                 i += 1
-            else :
+            else:
                 break
     progress = value / len(prompt)
     send({'id': id, 'progress': progress})
@@ -239,7 +242,7 @@ def time_per_word(times_per_player, words):
         index = 1
         s = []
         while index < len(el):
-            s.append(el[index] - el[index -1])
+            s.append(el[index] - el[index - 1])
             index += 1
         times.append(s)
     return game(words, times)
@@ -255,7 +258,7 @@ def fastest_words(game):
         a list of lists containing which words each player typed fastest
     """
     players = range(len(all_times(game)))  # An index for each player
-    words = range(len(all_words(game)))    # An index for each word
+    words = range(len(all_words(game)))  # An index for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
     # s.index(x[, i[, j]])   list.index(min(list))
@@ -266,7 +269,7 @@ def fastest_words(game):
     for w in words:
         time_list = []
         for t in players:
-            time_list.append(time(game, t , w))
+            time_list.append(time(game, t, w))
         min_index = time_list.index(min(time_list))
         word_list[min_index].append(word_at(game, w))
     return word_list
@@ -309,51 +312,62 @@ def game_string(game):
     """A helper function that takes in a game object and returns a string representation of it"""
     return "game(%s, %s)" % (game[0], game[1])
 
+
 enable_multiplayer = True  # Change to True when you
 
 ##########################
 # Extra Credit #
 ##########################
 import math
+
 key_distance = get_key_distances()
+
+
 def key_distance_diff(start, goal, limit):
     """ A diff function that takes into account the distances between keys when
     computing the difference score."""
 
-    start = start.lower() #converts the string to lowercase
-    goal = goal.lower() #converts the string to lowercase
+    start = start.lower()  # converts the string to lowercase
+    goal = goal.lower()  # converts the string to lowercase
     # fighting fighting fighting for future
     # BEGIN PROBLEM EC1
     "*** YOUR CODE HERE ***"
-    if limit < 0 :
+    if limit < 0:
         return math.inf
-    elif len(start)==0 or len(goal)==0:
+    elif len(start) == 0 or len(goal) == 0:
         return len(start) + len(goal)
     elif start[0] == goal[0]:
         return key_distance_diff(start[1:], goal[1:], limit)
-    else :
+    else:
         distance = key_distance[start[0], goal[0]]
         if distance > 2:
             distance = 2
-        add_diff = 1 + key_distance_diff(start, goal[1:], limit -1)
-        remove_diff = 1 + key_distance_diff(start[1:], goal, limit -1)
-        substitute_diff = distance + key_distance_diff(start[1:], goal[1:], limit -distance)
+        add_diff = 1 + key_distance_diff(start, goal[1:], limit - 1)
+        remove_diff = 1 + key_distance_diff(start[1:], goal, limit - 1)
+        substitute_diff = distance + key_distance_diff(start[1:], goal[1:], limit - distance)
         return min(add_diff, remove_diff, substitute_diff)
     # END PROBLEM EC1
+
 
 def memo(f):
     """A memoization function as seen in John Denero's lecture on Growth"""
 
     cache = {}
+
     def memoized(*args):
         if args not in cache:
             cache[args] = f(*args)
         return cache[args]
+
     return memoized
+
+
 key_distance_diff = memo(key_distance_diff)
 key_distance_diff = count(key_distance_diff)
 
 found_dict = {}
+
+
 # https://www.youtube.com/watch?v=IB8VSP9EZQs&list=PL6BsET-8jgYXsQ35_ZS1e_tX5LZf5PPrS&index=3
 def faster_autocorrect(user_word, valid_words, diff_function, limit):
     """A memoized version of the autocorrect function implemented above."""
@@ -369,7 +383,7 @@ def faster_autocorrect(user_word, valid_words, diff_function, limit):
         return found_dict[(user_word, diff_function)]
     for e in valid_words:
         diff_value = diff_function(user_word, e, limit)
-        if  diff_value <= limit:
+        if diff_value <= limit:
             diff_dict[e] = diff_value
     if diff_dict:
         result = min(diff_dict, key=diff_dict.get)

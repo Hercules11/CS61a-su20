@@ -34,6 +34,7 @@ def main():
     else:
         raise Exception(body["message"])
 
+
 ##################
 # AUTHENTICATION #
 ################ #
@@ -273,6 +274,7 @@ class OAuthSession:
             cur_time = int(time.time())
             self.expires_at = cur_time + expires_in
         return self.access_token
+
 
 if __name__ == '__main__':
     main()

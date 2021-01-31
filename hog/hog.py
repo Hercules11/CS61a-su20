@@ -5,6 +5,7 @@ from ucb import main, trace, interact
 
 GOAL_SCORE = 100  # The goal of Hog is to score 100 points.
 
+
 ######################
 # Phase 1: Simulator #
 ######################
@@ -27,13 +28,13 @@ def roll_dice(num_rolls, dice=six_sided):
     key_word = 0
     while left_nums:
         value = dice()
-        if value == 1 :
+        if value == 1:
             key_word = 1
         total += value
         left_nums -= 1
     if key_word:
         return 1
-    else :
+    else:
         return total
     # END PROBLEM 1
 
@@ -69,8 +70,8 @@ def take_turn(num_rolls, opponent_score, dice=six_sided):
     "*** YOUR CODE HERE ***"
     if num_rolls == 0:
         return free_bacon(opponent_score)
-    else :
-        return roll_dice(num_rolls,dice)
+    else:
+        return roll_dice(num_rolls, dice)
     # END PROBLEM 3
 
 
@@ -152,7 +153,7 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
         say = say0(score0, score1)
         if score1 >= goal or score0 >= goal:
             return score0, score1
-# game is no problem, but the result is different from my understanding.
+    # game is no problem, but the result is different from my understanding.
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
@@ -172,6 +173,7 @@ def say_scores(score0, score1):
     print("Player 0 now has", score0, "and Player 1 now has", score1)
     return say_scores
 
+
 def announce_lead_changes(last_leader=None):
     """Return a commentary function that announces lead changes.
 
@@ -185,6 +187,7 @@ def announce_lead_changes(last_leader=None):
     >>> f5 = f4(15, 13)
     Player 0 takes the lead by 2
     """
+
     def say(score0, score1):
         if score0 > score1:
             leader = 0
@@ -192,10 +195,12 @@ def announce_lead_changes(last_leader=None):
             leader = 1
         else:
             leader = None
-        if leader != None and leader != last_leader:
+        if leader is not None and leader != last_leader:
             print('Player', leader, 'takes the lead by', abs(score0 - score1))
         return announce_lead_changes(leader)
+
     return say
+
 
 def both(f, g):
     """Return a commentary function that says what f says, then what g says.
@@ -213,8 +218,10 @@ def both(f, g):
     Player 0 now has 6 and Player 1 now has 17
     Player 1 takes the lead by 11
     """
+
     def say(score0, score1):
         return both(f(score0, score1), g(score0, score1))
+
     return say
 
 
@@ -245,20 +252,22 @@ def announce_highest(who, last_score=0, running_high=0):
     # BEGIN PROBLEM 7
     # not use sharing variables
     "*** YOUR CODE HERE ***"
+
     def say(score0, score1):
         pre_score = last_score
-        current_high = running_high # every call reassign value, maintain the child frame value
+        current_high = running_high  # every call reassign value, maintain the child frame value
         # nonlocal who, last_score, running_high
         if who:
             change_value = score1 - pre_score
             current_score = score1
-        else :
+        else:
             change_value = score0 - pre_score
             current_score = score0
-        if change_value >current_high:
-                current_high = change_value
-                print(current_high, 'point(s)! That\'s the biggest gain yet for Player', who)
-        return announce_highest(who, current_score, current_high) # parameter is different, but track of para is same
+        if change_value > current_high:
+            current_high = change_value
+            print(current_high, 'point(s)! That\'s the biggest gain yet for Player', who)
+        return announce_highest(who, current_score, current_high)  # parameter is different, but track of para is same
+
     return say
     # END PROBLEM 7
 
@@ -281,8 +290,10 @@ def always_roll(n):
     >>> strategy(99, 99)
     5
     """
+
     def strategy(score, opponent_score):
         return n
+
     return strategy
 
 
@@ -301,12 +312,14 @@ def make_averaged(original_function, trials_count=1000):
     "*** YOUR CODE HERE ***"
     result = 0
     left_count = trials_count
+
     def child_function(*args):
         nonlocal result, left_count
         while left_count:
             result += original_function(*args)
             left_count -= 1
-        return result/trials_count
+        return result / trials_count
+
     return child_function
     # END PROBLEM 8
 
@@ -324,7 +337,7 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     "*** YOUR CODE HERE ***"
     num_roll = 1
     score_high = 0
-    while 11-num_roll:
+    while 11 - num_roll:
         average = make_averaged(roll_dice, trials_count=1000)
         average_value = average(num_roll, dice)
         if average_value > score_high:
@@ -375,7 +388,6 @@ def run_experiments():
     "*** You may add additional experiments as you wish ***"
 
 
-
 def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     """This strategy rolls 0 dice if that gives at least CUTOFF points, and
     rolls NUM_ROLLS otherwise.
@@ -400,7 +412,7 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     if is_swap(score, opponent_score):
         if score < opponent_score:
             return 0
-    else :
+    else:
         if score_value >= cutoff:
             return 0
     return num_rolls
@@ -417,18 +429,19 @@ def final_strategy(score, opponent_score):
     """
     # BEGIN PROBLEM 12
     if score < opponent_score:
-        if opponent_score >= 0.5*GOAL_SCORE:
-            if score >= 0.5*GOAL_SCORE:
+        if opponent_score >= 0.5 * GOAL_SCORE:
+            if score >= 0.5 * GOAL_SCORE:
                 return bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6)
-            else :
+            else:
                 return swap_strategy(score, opponent_score, cutoff=8, num_rolls=6)
-        else :
+        else:
             return swap_strategy(score, opponent_score, cutoff=8, num_rolls=6)
-    else :
+    else:
         return bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6)
     # lack of a win rate
     # return 6  # Replace this statement
     # END PROBLEM 12
+
 
 ##########################
 # Command Line Interface #

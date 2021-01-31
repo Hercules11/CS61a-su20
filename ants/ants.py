@@ -3,7 +3,8 @@
 import random
 from ucb import main, interact, trace
 from collections import OrderedDict
-# refer to https://github.com/zhou0220/cs61a-su20/blob/master/project/ants/ants.py
+
+
 ################
 # Core Classes #
 ################
@@ -19,8 +20,8 @@ class Place:
         """
         self.name = name
         self.exit = exit
-        self.bees = []        # A list of Bees
-        self.ant = None       # An Ant
+        self.bees = []  # A list of Bees
+        self.ant = None  # An Ant
         self.entrance = None  # A Place
         # Phase 1: Add an entrance to the exit
         # BEGIN Problem 2
@@ -52,6 +53,7 @@ class Insect:
 
     damage = 0
     is_watersafe = False
+
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, armor, place=None):
@@ -94,7 +96,6 @@ class Insect:
     def remove_from(self, place):
         self.place = None
 
-
     def __repr__(self):
         cname = type(self).__name__
         return '{0}({1}, {2})'.format(cname, self.armor, self.place)
@@ -107,6 +108,7 @@ class Ant(Insect):
     food_cost = 0
     blocks_path = True
     double_damaged = False
+
     # ADD CLASS ATTRIBUTES HERE
 
     def __init__(self, armor=1):
@@ -147,12 +149,14 @@ class Ant(Insect):
             place.ant.remove_ant(self)
         Insect.remove_from(self, place)
 
+
 class HarvesterAnt(Ant):
     """HarvesterAnt produces 1 additional food per turn for the colony."""
 
     name = 'Harvester'
     implemented = True
     food_cost = 2
+
     # OVERRIDE CLASS ATTRIBUTES HERE
 
     def action(self, gamestate):
@@ -175,6 +179,7 @@ class ThrowerAnt(Ant):
     food_cost = 3
     min_range = 0
     max_range = float("inf")
+
     # ADD/OVERRIDE CLASS ATTRIBUTES HERE
 
     def nearest_bee(self, beehive):
@@ -187,7 +192,7 @@ class ThrowerAnt(Ant):
         # always think with object
         distance = 0
         location = self.place
-        while location != beehive :
+        while location != beehive:
             if location.bees and distance >= self.min_range and distance <= self.max_range:
                 return rANTdom_else_none(location.bees)
             distance += 1
@@ -204,11 +209,13 @@ class ThrowerAnt(Ant):
         """Throw a leaf at the nearest Bee in range."""
         self.throw_at(self.nearest_bee(gamestate.beehive))
 
+
 def rANTdom_else_none(s):
     """Return a random element of sequence S, or return None if S is empty."""
     assert isinstance(s, list), "rANTdom_else_none's argument should be a list but was a %s" % type(s).__name__
     if s:
         return random.choice(s)
+
 
 ##############
 # Extensions #
@@ -225,8 +232,9 @@ class ShortThrower(ThrowerAnt):
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
 
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
     # END Problem 4
+
 
 class LongThrower(ThrowerAnt):
     """A ThrowerAnt that only throws leaves at Bees at least 5 places away."""
@@ -239,8 +247,9 @@ class LongThrower(ThrowerAnt):
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 4
 
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
     # END Problem 4
+
 
 class FireAnt(Ant):
     """FireAnt cooks any Bee in its Place when it expires."""
@@ -252,7 +261,8 @@ class FireAnt(Ant):
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 5
 
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem 5
 
     def __init__(self, armor=3):
@@ -271,12 +281,13 @@ class FireAnt(Ant):
         bees = self.place.bees[:]
         for bee in bees:
             bee.armor -= amount
-            if (self.armor - amount <= 0) and  not self.double_damaged: # supplement from p13
+            if (self.armor - amount <= 0) and not self.double_damaged:  # supplement from p13
                 bee.reduce_armor(self.damage)
             elif (self.armor - amount <= 0) and self.double_damaged:
-                bee.reduce_armor(self.damage/2)
+                bee.reduce_armor(self.damage / 2)
         Ant.reduce_armor(self, amount)
         # END Problem 5
+
 
 class HungryAnt(Ant):
     """HungryAnt will take three turns to digest a Bee in its place.
@@ -287,13 +298,14 @@ class HungryAnt(Ant):
     time_to_digest = 3
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 6
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem 6
 
     def __init__(self, armor=1):
         # BEGIN Problem 6
         "*** YOUR CODE HERE ***"
-        Ant.__init__(self, armor) # calling parent constructor
+        Ant.__init__(self, armor)  # calling parent constructor
         self.digesting = 0
         # END Problem 6
         # 有点点吃力啊，面对对象的思想还是没有和编程技术融合到一起
@@ -301,7 +313,7 @@ class HungryAnt(Ant):
     def eat_bee(self, bee):
         # BEGIN Problem 6
         "*** YOUR CODE HERE ***"
-        bee.reduce_armor(bee.armor) # base class attribute
+        bee.reduce_armor(bee.armor)  # base class attribute
         self.digesting = self.time_to_digest
         # END Problem 6
 
@@ -315,6 +327,7 @@ class HungryAnt(Ant):
             self.eat_bee(rANTdom_else_none(self.place.bees))
         # END Problem 6
 
+
 class NinjaAnt(Ant):
     """NinjaAnt does not block the path and damages all bees in its place."""
 
@@ -325,8 +338,9 @@ class NinjaAnt(Ant):
     # Don't search for answer as much as possible,
     # boost the ability of integrating and expanding info resources
     # BEGIN Problem 7
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
     blocks_path = False
+
     # END Problem 7
 
     def action(self, gamestate):
@@ -337,6 +351,7 @@ class NinjaAnt(Ant):
             bee.reduce_armor(self.damage)
         # END Problem 7
 
+
 # BEGIN Problem 8
 # The WallAnt class
 class WallAnt(Ant):
@@ -345,8 +360,11 @@ class WallAnt(Ant):
     food_cost = 4
     # armor = 4
     implemented = True
+
     def __init__(self, armor=4):
         Ant.__init__(self, armor)
+
+
 # END Problem 8
 
 class ContainerAnt(Ant):
@@ -387,8 +405,9 @@ class ContainerAnt(Ant):
         # BEGIN Problem 9
         "*** YOUR CODE HERE ***"
         if self.contained_ant:
-            self.contained_ant.action(gamestate) # why so?
+            self.contained_ant.action(gamestate)  # why so?
         # END Problem 9
+
 
 class BodyguardAnt(ContainerAnt):
     """BodyguardAnt provides protection to other Ants."""
@@ -397,10 +416,12 @@ class BodyguardAnt(ContainerAnt):
     food_cost = 4
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 9
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     def __init__(self, armor=2):
         ContainerAnt.__init__(self, armor)
     # END Problem 9
+
 
 class TankAnt(ContainerAnt):
     """TankAnt provides both offensive and defensive capabilities."""
@@ -410,7 +431,8 @@ class TankAnt(ContainerAnt):
     food_cost = 6
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 10
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem 10
 
     def __init__(self, armor=2):
@@ -420,17 +442,19 @@ class TankAnt(ContainerAnt):
         # BEGIN Problem 10
         "*** YOUR CODE HERE ***"
         if self.contained_ant:
-            self.contained_ant.action(gamestate) # why so?
+            self.contained_ant.action(gamestate)  # why so?
             # 姑且理解为做了一个节拍的动作
         bees = self.place.bees[:]
         for bee in bees:
             bee.reduce_armor(self.damage)
         # END Problem 10
 
+
 class Water(Place):
     """Water is a place that can only hold watersafe insects."""
+
     def __init__(self, name):
-        Place.__init__(self, name) # pass in name of place
+        Place.__init__(self, name)  # pass in name of place
 
     def add_insect(self, insect):
         """Add an Insect to this place. If the insect is not watersafe, reduce
@@ -442,6 +466,7 @@ class Water(Place):
             insect.reduce_armor(insect.armor)
         # END Problem 11
 
+
 # BEGIN Problem 12
 # The ScubaThrower class
 class ScubaThrower(ThrowerAnt):
@@ -450,16 +475,19 @@ class ScubaThrower(ThrowerAnt):
     name = "Scuba"
     Implemented = True
     is_watersafe = True
+
     # armor = 1
     # this is ok
     # OVERRUDE CLASS ATTRIBUTE HERE
     def __init__(self, armor=1):
         ThrowerAnt.__init__(self, armor)
+
+
 # END Problem 12
 
 # BEGIN Problem 13
 class QueenAnt(ScubaThrower):  # You should change this line
-# END Problem 13
+    # END Problem 13
     """The Queen of the colony. The game is over if a bee enters her place."""
 
     name = 'Queen'
@@ -467,7 +495,8 @@ class QueenAnt(ScubaThrower):  # You should change this line
     first_queen = True
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem 13
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem 13
 
     def __init__(self, armor=1):
@@ -491,7 +520,6 @@ class QueenAnt(ScubaThrower):  # You should change this line
                 place.ant.remove_ant(self)
             Insect.remove_from(self, place)
 
-
     def action(self, gamestate):
         """A queen ant throws a leaf, but also doubles the damage of ants
         in her tunnel.
@@ -509,7 +537,7 @@ class QueenAnt(ScubaThrower):  # You should change this line
             while cur_place:
                 # deals with the ContainerAnt
                 if isinstance(cur_place.ant, ContainerAnt) and cur_place.ant.contained_ant != None \
-                and  not cur_place.ant.contained_ant.double_damaged:
+                        and not cur_place.ant.contained_ant.double_damaged:
                     cur_place.ant.contained_ant.damage += cur_place.ant.contained_ant.damage
                     cur_place.ant.contained_ant.double_damaged = True
                 # deals with general ants
@@ -535,6 +563,7 @@ class QueenAnt(ScubaThrower):  # You should change this line
             bees_win()
         # END Problem 13
 
+
 class AntRemover(Ant):
     """Allows the player to remove ants from the board in the GUI."""
 
@@ -544,6 +573,7 @@ class AntRemover(Ant):
     def __init__(self):
         Ant.__init__(self, 0)
 
+
 class Bee(Insect):
     """A Bee moves from place to place, following exits and stinging ants."""
 
@@ -552,8 +582,8 @@ class Bee(Insect):
     is_watersafe = True
     has_scared = False
     nomore_scared = False
-    # OVERRIDE CLASS ATTRIBUTES HERE
 
+    # OVERRIDE CLASS ATTRIBUTES HERE
 
     def sting(self, ant):
         """Attack an ANT, reducing its armor by 1."""
@@ -568,11 +598,11 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Phase 4: Special handling for NinjaAnt
         # BEGIN Problem 7
-        if self.place.ant is None :
+        if self.place.ant is None:
             return False
-        elif self.place.ant.blocks_path :
+        elif self.place.ant.blocks_path:
             return True
-        else :
+        else:
             return False
         # END Problem 7
 
@@ -586,7 +616,7 @@ class Bee(Insect):
         # Extra credit: Special handling for bee direction
         # BEGIN EC
         "*** YOUR CODE HERE ***"
-        if self.has_scared :
+        if self.has_scared:
             destination = self.place.entrance
         # END EC
         if self.blocked():
@@ -602,6 +632,7 @@ class Bee(Insect):
         place.bees.remove(self)
         Insect.remove_from(self, place)
 
+
 ############
 # Statuses #
 ############
@@ -614,13 +645,16 @@ def make_slow(action, bee):
     """
     # BEGIN Problem EC
     "*** YOUR CODE HERE ***"
+
     # firstly accept function, then accept parameters
     def new_action(gamestate):
         # print(2) use it to test where the ptoblem is
         if not gamestate.time % 2:
             action(gamestate)
+
     return new_action
     # END Problem EC
+
 
 def make_scare(action, bee):
     """Return a new action method that makes the bee go backwards.
@@ -629,14 +663,17 @@ def make_scare(action, bee):
     """
     # BEGIN Problem EC
     "*** YOUR CODE HERE ***"
+
     def new_action(gamestate):
-        if bee.nomore_scared :
+        if bee.nomore_scared:
             action(gamestate)
-        else :
+        else:
             bee.has_scared = True
             action(gamestate)
+
     return new_action
     # END Problem EC
+
 
 def apply_status(status, bee, length):
     """Apply a status to a BEE that lasts for LENGTH turns."""
@@ -659,7 +696,6 @@ def apply_status(status, bee, length):
     # END Problem EC
 
 
-
 class SlowThrower(ThrowerAnt):
     """ThrowerAnt that causes Slow on Bees."""
 
@@ -667,7 +703,8 @@ class SlowThrower(ThrowerAnt):
     food_cost = 4
     damage = 0
     # BEGIN Problem EC
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem EC
 
     def throw_at(self, target):
@@ -683,7 +720,8 @@ class ScaryThrower(ThrowerAnt):
     scared_bees = []
     damage = 0
     # BEGIN Problem EC
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem EC
 
     def throw_at(self, target):
@@ -694,6 +732,7 @@ class ScaryThrower(ThrowerAnt):
             ScaryThrower.scared_bees.append(target)
         # END Problem EC
 
+
 class LaserAnt(ThrowerAnt):
     # This class is optional. Only one test is provided for this class.
 
@@ -702,7 +741,8 @@ class LaserAnt(ThrowerAnt):
     damage = 2
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem OPTIONAL
-    implemented = True   # Change to True to view in the GUI
+    implemented = True  # Change to True to view in the GUI
+
     # END Problem OPTIONAL
 
     def __init__(self, armor=1):
@@ -714,17 +754,17 @@ class LaserAnt(ThrowerAnt):
         enemy_dict = {}
         location = self.place
         distance = 0
-        if self.place.ant is not self :
+        if self.place.ant is not self:
             enemy_dict[self.place.ant] = distance
-        while location != beehive :
-            if location.bees :
-                for el in location.bees :
+        while location != beehive:
+            if location.bees:
+                for el in location.bees:
                     enemy_dict[el] = distance
             location = location.entrance
             distance += 1
-            if location.ant :
+            if location.ant:
                 enemy_dict[location.ant] = distance
-                if isinstance(location.ant, ContainerAnt) :
+                if isinstance(location.ant, ContainerAnt):
                     enemy_dict[location.ant.contained_ant] = distance
 
         return enemy_dict
@@ -732,7 +772,7 @@ class LaserAnt(ThrowerAnt):
 
     def calculate_damage(self, distance):
         # BEGIN Problem OPTIONAL
-        lose_damage = distance*0.2 + self.insects_shot*0.05
+        lose_damage = distance * 0.2 + self.insects_shot * 0.05
         damage_value = self.damage - lose_damage
         return damage_value
         # END Problem OPTIONAL
@@ -755,6 +795,7 @@ class Wasp(Bee):
     name = 'Wasp'
     damage = 2
 
+
 class Hornet(Bee):
     """Class of bee that is capable of taking two actions per turn, although
     its overall damage output is lower. Immune to statuses.
@@ -771,6 +812,7 @@ class Hornet(Bee):
         if name != 'action':
             object.__setattr__(self, name, value)
 
+
 class NinjaBee(Bee):
     """A Bee that cannot be blocked. Is capable of moving past all defenses to
     assassinate the Queen.
@@ -779,6 +821,7 @@ class NinjaBee(Bee):
 
     def blocked(self):
         return False
+
 
 class Boss(Wasp, Hornet):
     """The leader of the bees. Combines the high damage of the Wasp along with
@@ -793,7 +836,8 @@ class Boss(Wasp, Hornet):
         super().reduce_armor(self.damage_modifier(amount))
 
     def damage_modifier(self, amount):
-        return amount * self.damage_cap/(self.damage_cap + amount)
+        return amount * self.damage_cap / (self.damage_cap + amount)
+
 
 class Hive(Place):
     """The Place from which the Bees launch their assault.
@@ -853,11 +897,13 @@ class GameState:
         self.base = AntHomeBase('Ant Home Base')
         self.places = OrderedDict()
         self.bee_entrances = []
+
         def register_place(place, is_bee_entrance):
             self.places[place.name] = place
             if is_bee_entrance:
                 place.entrance = beehive
                 self.bee_entrances.append(place)
+
         register_place(self.beehive, False)
         create_places(self.base, register_place, self.dimensions[0], self.dimensions[1])
 
@@ -866,12 +912,12 @@ class GameState:
         num_bees = len(self.bees)
         try:
             while True:
-                self.strategy(self)                 # Ants deploy
-                self.beehive.strategy(self)         # Bees invade
-                for ant in self.ants:               # Ants take actions
+                self.strategy(self)  # Ants deploy
+                self.beehive.strategy(self)  # Bees invade
+                for ant in self.ants:  # Ants take actions
                     if ant.armor > 0:
                         ant.action(self)
-                for bee in self.active_bees[:]:     # Bees take actions
+                for bee in self.active_bees[:]:  # Bees take actions
                     if bee.armor > 0:
                         bee.action(self)
                     if bee.armor <= 0:
@@ -923,6 +969,7 @@ class GameState:
         status = ' (Food: {0}, Time: {1})'.format(self.food, self.time)
         return str([str(i) for i in self.ants + self.bees]) + status
 
+
 class AntHomeBase(Place):
     """AntHomeBase at the end of the tunnel, where the queen resides."""
 
@@ -936,13 +983,16 @@ class AntHomeBase(Place):
         assert isinstance(insect, Bee), 'Cannot add {0} to AntHomeBase'
         raise BeesWinException()
 
+
 def ants_win():
     """Signal that Ants win."""
     raise AntsWinException()
 
+
 def bees_win():
     """Signal that Bees win."""
     raise BeesWinException()
+
 
 def ant_types():
     """Return a list of all implemented Ant classes."""
@@ -953,17 +1003,21 @@ def ant_types():
         all_ant_types.extend(new_types)
     return [t for t in all_ant_types if t.implemented]
 
+
 class GameOverException(Exception):
     """Base game over Exception."""
     pass
+
 
 class AntsWinException(GameOverException):
     """Exception to signal that the ants win."""
     pass
 
+
 class BeesWinException(GameOverException):
     """Exception to signal that the bees win."""
     pass
+
 
 def interactive_strategy(gamestate):
     """A strategy that starts an interactive session and lets the user make
@@ -975,6 +1029,7 @@ def interactive_strategy(gamestate):
     print('gamestate: ' + str(gamestate))
     msg = '<Control>-D (<Control>-Z <Enter> on Windows) completes a turn.\n'
     interact(msg)
+
 
 ###########
 # Layouts #
@@ -990,6 +1045,7 @@ def wet_layout(queen, register_place, tunnels=3, length=9, moat_frequency=3):
             else:
                 exit = Place('tunnel_{0}_{1}'.format(tunnel, step), exit)
             register_place(exit, step == length - 1)
+
 
 def dry_layout(queen, register_place, tunnels=3, length=9):
     """Register dry tunnels."""

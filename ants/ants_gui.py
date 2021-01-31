@@ -50,7 +50,7 @@ INSECT_FILES = {'Worker': 'ant_harvester.gif',
                 'Hornet': 'hornet.gif',
                 'NinjaBee': 'ninjabee.gif',
                 'Boss': 'boss.gif',
-}
+                }
 INSECT_BASE = 'img/'
 INSECT_FILES = {k: INSECT_BASE + v for k, v in INSECT_FILES.items()}
 TUNNEL_FILE = 'img/tunnel.gif'
@@ -106,6 +106,7 @@ class AntsGUI:
         for name, ant_type in gamestate.ant_types.items():
             width = ANT_IMAGE_WIDTH + 2 * PANEL_PADDING[0]
             height = ANT_IMAGE_HEIGHT + 6 + 2 * PANEL_PADDING[1]
+
             def on_click(gamestate, frame, name=name):
                 self.ant_type_selected = name
                 self._update_control_panel(gamestate)
@@ -115,7 +116,7 @@ class AntsGUI:
             img_pos = shift_point(panel_pos, PANEL_PADDING)
             self.canvas.draw_image(img_pos, INSECT_FILES[name])
             cost_pos = shift_point(panel_pos, (width / 2, ANT_IMAGE_HEIGHT + 4
-                + PANEL_PADDING[1]))
+                                               + PANEL_PADDING[1]))
             food_str = str(ant_type.food_cost)
             self.canvas.draw_text(food_str, cost_pos, anchor="center")
             panel_pos = shift_point(panel_pos, (width + 2, 0))
@@ -136,6 +137,7 @@ class AntsGUI:
                 row_offset = (0, rows * (height + PLACE_MARGIN))
                 place_pos = shift_point(PLACE_POS, row_offset)
                 rows += 1
+
             def on_click(gamestate, frame, name=name):
                 ant_type = self.ant_type_selected
                 existing_ant = gamestate.places[name].ant
@@ -147,14 +149,15 @@ class AntsGUI:
                 elif ant_type is not None:
                     try:
                         print("gamestate.deploy_ant('{0}', '{1}')".format(name,
-                                                                       ant_type))
+                                                                          ant_type))
                         gamestate.deploy_ant(name, ant_type)
                         self._update_places(gamestate)
                     except Exception as e:
                         print(e)
+
             color = 'Blue' if place.name.startswith('water') else 'White'
             frame = self.add_click_rect(place_pos, width, height, on_click,
-                                             color=color)
+                                        color=color)
             self.canvas.draw_image(place_pos, TUNNEL_FILE)
             self.place_points[name] = place_pos
             self.images[name] = dict()
@@ -163,7 +166,7 @@ class AntsGUI:
         # Hive
         self.images[gamestate.beehive.name] = dict()
         self.place_points[gamestate.beehive.name] = (place_pos[0] + width,
-                                               HIVE_HEIGHT)
+                                                     HIVE_HEIGHT)
         self.laser_end = (BEE_IMAGE_WIDTH + 2 * PLACE_PADDING[0]) * len(gamestate.places)
         for bee in gamestate.beehive.bees:
             self._draw_insect(bee, gamestate.beehive.name, True)
@@ -233,7 +236,7 @@ class AntsGUI:
             # Add/move missing insects
             if place.ant is not None:
                 if isinstance(place.ant, ants.ContainerAnt) \
-                    and place.ant.contained_ant and place.ant.contained_ant not in current:
+                        and place.ant.contained_ant and place.ant.contained_ant not in current:
                     container = self.images[name][place.ant]
                     self._draw_insect(place.ant.contained_ant, name, behind=container)
                 if place.ant not in current:
@@ -278,35 +281,43 @@ class AntsGUI:
             end = shift_point(self.place_points[bee.place.name], LEAF_END_OFFSET)
             animate_leaf(self.canvas, start, end, color=LEAF_COLORS[ant.name])
 
+
 def leaf_coords(pos, angle, length):
     """Return the coordinates of a leaf polygon."""
-    angles = [angle - pi, angle - pi/2, angle, angle + pi/2]
-    distances = [length/3, length/2, length, length/2]
+    angles = [angle - pi, angle - pi / 2, angle, angle + pi / 2]
+    distances = [length / 3, length / 2, length, length / 2]
     return [graphics.translate_point(pos, a, d) for a, d in zip(angles, distances)]
+
 
 def animate_laser(canvas, start, length, duration=0.6, color='cyan'):
     laser = canvas.draw_line(start, (length, start[1]), color, width=3)
-    canvas._canvas.after(int(1000*duration) + 1, lambda: canvas.clear(laser))
+    canvas._canvas.after(int(1000 * duration) + 1, lambda: canvas.clear(laser))
+
 
 def animate_leaf(canvas, start, end, duration=0.3, color='ForestGreen'):
     """Define the animation frames for a thrown leaf."""
     length = 40
     leaf = canvas.draw_polygon(leaf_coords(start, 0, length),
-            color='DarkGreen', fill_color=color, smooth=1)
+                               color='DarkGreen', fill_color=color, smooth=1)
     num_frames = duration / graphics.FRAME_TIME
-    increment = tuple([(e-s) / num_frames for s, e in zip(start, end)])
+    increment = tuple([(e - s) / num_frames for s, e in zip(start, end)])
+
     def points_fn(frame_count):
         nonlocal start
         angle = pi / 8 * frame_count
         cs = leaf_coords(start, angle, length)
         start = shift_point(start, increment)
         return cs
+
     canvas.animate_shape(leaf, duration, points_fn)
-    canvas._canvas.after(int(1000*duration) + 1, lambda: canvas.clear(leaf))
+    canvas._canvas.after(int(1000 * duration) + 1, lambda: canvas.clear(leaf))
+
 
 from utils import *
+
+
 @main
 def run(*args):
     ants.Insect.reduce_armor = class_method_wrapper(ants.Insect.reduce_armor,
-            pre=print_expired_insects)
+                                                    pre=print_expired_insects)
     ants_strategies.start_with_strategy(args, AntsGUI().strategy)

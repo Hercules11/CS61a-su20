@@ -1,6 +1,7 @@
 from ants import *
 from ants_plans import *
 
+
 def start_with_strategy(args, strategy):
     """Reads command-line arguments and starts a game with those options."""
     import argparse

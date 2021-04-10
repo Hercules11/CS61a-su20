@@ -1,6 +1,0 @@
-*
-!/.gitignore
-!/scheme.py
-!/scheme_reader.py
-!/questions.scm
-!/tests.scm

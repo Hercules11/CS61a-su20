@@ -4,4 +4,4 @@
 
 五星好评，⭐⭐⭐⭐⭐
 
-<div align="left"><img src=".hog/protect_you_until_you_can_fly.jpg" /></div>
+<div align="left"><img src="hog/protect_you_until_you_can_fly.jpg" /></div>

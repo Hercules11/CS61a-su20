@@ -2,3 +2,8 @@ Test
 *.pdf
 *.zip
 .idea
+*.ok
+tests/
+__pycache__
+.ok_*
+*.bat

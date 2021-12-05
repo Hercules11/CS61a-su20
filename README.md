@@ -1,13 +1,13 @@
 本仓库为 伯克利计算机科学 入门课程 [CS 61A: Structure and Interpretation of Computer Programs](https://inst.eecs.berkeley.edu/~cs61a/su20/) 的学习记录
 
-课程自带测试
+**课程自带测试**
 
 包括：
 
 - proj1 —— 掷色子游戏，主要内容为程序基本逻辑的使用，while 循环、if 判断、递归的使用
-- proj2 ——  自动纠正输入，在前面课程的基础上，增加了对函数的构建与使用，进一步提供对程序的理解
+- proj2 ——  自动纠正输入，在前面课程的基础上，增加了对函数的构建与使用，进一步加深对程序的理解
 - proj3 ——  保卫蚂蚁巢穴，以前面的项目为基础，增加对类的声明和使用
-- proj4 ——  Scheme 解释器，很抽象，代码量很大
+- proj4 ——  Scheme 解释器，抽象，代码量很大
 
 五星好评，⭐⭐⭐⭐⭐
 
@@ -1018,14 +1018,3 @@ Midterm(<a href="https://current-time-zone.github.io/t#1594944000">5:00pm</a>-<a
 </tr>
 </tbody></table>
 
-
-
-
-
-------
-
-注：
-
-1. 在运行 `ok` 测试文件的时候，加入 --local 参数，可以阻止弹出要你输入邮箱的提示; 
-
-2. HTML 表格解析为md 表格, 要将空行删除，typora 无法分辨是换行还是要推出代码解析模式
